@@ -47,8 +47,19 @@ export class SignupComponent implements OnInit {
     if (this.authForm.invalid) {
       return;
     }
-    this.authService
-      .signup(this.authForm.value)
-      .subscribe((response) => console.log(response));
+    this.authService.signup(this.authForm.value).subscribe({
+      next: (response) => {
+        //Navigate to some other route
+      },
+      error: (err) => {
+        if (!err.status) {
+          this.authForm.setErrors({ noConnection: true });
+        } else {
+          this.authForm.setErrors({ unknownError: true });
+        }
+      },
+    });
   }
 }
+
+//this inside next is the subscriber object - unsubscribe, hence you need to change to arrow function
