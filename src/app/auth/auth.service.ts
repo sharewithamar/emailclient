@@ -37,13 +37,16 @@ export class AuthService {
   // Remember Error coming out of observable will skip tap operator
   signup(credentials: SignupCredentials) {
     return this.http
-      .post<SignupResponse>(`${this.rootUrl}/auth/signup`, credentials)
+      .post<SignupResponse>(`${this.rootUrl}/auth/signup`, credentials, {
+        withCredentials: true,
+      })
       .pipe(tap(() => this.signedin$.next(true)));
   }
 
+  //WithCredetianls option is to ensure httpclient dont discard received cookie and to send cookie in subseuent requests
   checkAuth() {
     return this.http
-      .get(`${this.rootUrl}/auth/signedin`)
+      .get(`${this.rootUrl}/auth/signedin`, { withCredentials: true })
       .pipe(tap((response) => console.log(response)));
   }
 }
