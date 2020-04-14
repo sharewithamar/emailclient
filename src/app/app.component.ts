@@ -19,4 +19,8 @@ export class AppComponent {
       this.signedin = signedin;
     });
   } */
+
+  ngOnInit() {
+    this.authService.checkAuth().subscribe((response) => console.log(response));
+  }
 }

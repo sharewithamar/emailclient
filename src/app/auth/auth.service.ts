@@ -40,4 +40,10 @@ export class AuthService {
       .post<SignupResponse>(`${this.rootUrl}/auth/signup`, credentials)
       .pipe(tap(() => this.signedin$.next(true)));
   }
+
+  checkAuth() {
+    return this.http
+      .get(`${this.rootUrl}/auth/signedin`)
+      .pipe(tap((response) => console.log(response)));
+  }
 }
