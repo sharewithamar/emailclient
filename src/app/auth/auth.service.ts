@@ -17,6 +17,11 @@ interface SignupResponse {
   username: string;
 }
 
+interface SignedinResponse {
+  authenticated: boolean;
+  username: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -44,7 +49,19 @@ export class AuthService {
   //WithCredetianls option is to ensure httpclient dont discard received cookie and to send cookie in subseuent requests
   checkAuth() {
     return this.http
-      .get(`${this.rootUrl}/auth/signedin`)
-      .pipe(tap((response) => console.log(response)));
+      .get<SignedinResponse>(`${this.rootUrl}/auth/signedin`)
+      .pipe(
+        tap(({ authenticated }) => {
+          this.signedin$.next(authenticated);
+        })
+      );
+  }
+  //atleast an empty body is required for post request
+  signout() {
+    return this.http.post(`${this.rootUrl}/auth/signout`, {}).pipe(
+      tap(() => {
+        this.signedin$.next(false);
+      })
+    );
   }
 }
