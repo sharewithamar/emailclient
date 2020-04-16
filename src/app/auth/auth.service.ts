@@ -31,7 +31,7 @@ interface SigninCredentials {
   providedIn: 'root',
 })
 export class AuthService {
-  signedin$ = new BehaviorSubject(false); //$ to indicate observable - optional js standard
+  signedin$ = new BehaviorSubject(null); //$ to indicate observable - optional js standard
   rootUrl = 'https://api.angular-email.com';
 
   constructor(private http: HttpClient) {}
