@@ -7,10 +7,10 @@ import { EmailService } from '../email.service';
 })
 export class EmailIndexComponent implements OnInit {
   constructor(private emailService: EmailService) {}
-
+  emails = [];
   ngOnInit(): void {
-    this.emailService.getEmails().subscribe(() => {
-      console.log('request success');
+    this.emailService.getEmails().subscribe((emails) => {
+      this.emails = emails;
     });
   }
 }
