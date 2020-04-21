@@ -17,6 +17,10 @@ interface SignupResponse {
   username: string;
 }
 
+interface SigninResponse {
+  username: string;
+}
+
 interface SignedinResponse {
   authenticated: boolean;
   username: string;
@@ -33,6 +37,7 @@ interface SigninCredentials {
 export class AuthService {
   signedin$ = new BehaviorSubject(null); //$ to indicate observable - optional js standard
   rootUrl = 'https://api.angular-email.com';
+  username = '';
 
   constructor(private http: HttpClient) {}
 
@@ -48,7 +53,12 @@ export class AuthService {
   signup(credentials: SignupCredentials) {
     return this.http
       .post<SignupResponse>(`${this.rootUrl}/auth/signup`, credentials)
-      .pipe(tap(() => this.signedin$.next(true)));
+      .pipe(
+        tap(({ username }) => {
+          this.username = username;
+          this.signedin$.next(true);
+        })
+      );
   }
 
   //WithCredetianls option is to ensure httpclient dont discard received cookie and to send cookie in subseuent requests
@@ -56,7 +66,8 @@ export class AuthService {
     return this.http
       .get<SignedinResponse>(`${this.rootUrl}/auth/signedin`)
       .pipe(
-        tap(({ authenticated }) => {
+        tap(({ authenticated, username }) => {
+          this.username = username;
           this.signedin$.next(authenticated);
         })
       );
@@ -71,10 +82,13 @@ export class AuthService {
   }
 
   signin(credentials: SigninCredentials) {
-    return this.http.post(`${this.rootUrl}/auth/signin`, credentials).pipe(
-      tap(() => {
-        this.signedin$.next(true);
-      })
-    );
+    return this.http
+      .post<SigninResponse>(`${this.rootUrl}/auth/signin`, credentials)
+      .pipe(
+        tap(({ username }) => {
+          this.username = username;
+          this.signedin$.next(true);
+        })
+      );
   }
 }
